@@ -1,0 +1,53 @@
+import json
+import pretty_midi
+
+def load_midi(file_path):
+    midi_data = pretty_midi.PrettyMIDI(file_path)
+    return midi_data
+
+def extract_notes(midi_data):
+    notes = []
+    for instrument in midi_data.instruments:
+        for note in instrument.notes:
+            notes.append({
+                'pitch': note.pitch,
+                'start': note.start,
+                'end': note.end,
+            })
+    return notes
+
+def compare_notes(score_notes, performance_notes):
+    errors = []
+    for score_note in score_notes:
+        matched = False
+        for performance_note in performance_notes:
+            if (score_note['pitch'] == performance_note['pitch'] and
+                abs(score_note['start'] - performance_note['start']) < 0.1 and
+                abs(score_note['end'] - performance_note['end']) < 0.1):
+                matched = True
+                break
+        if not matched:
+            errors.append(score_note)
+    return errors
+
+def lambda_handler(event, context):
+    # 요청 본문에서 데이터 읽기
+    body = json.loads(event['body'])
+    score_file_path = body['score_file_path']  # 예시: S3 경로
+    performance_file_path = body['performance_file_path']  # 예시: S3 경로
+
+    # MIDI 파일 로드 및 노트 추출
+    score_midi = load_midi(score_file_path)
+    performance_midi = load_midi(performance_file_path)
+
+    score_notes = extract_notes(score_midi)
+    performance_notes = extract_notes(performance_midi)
+
+    # 노트 비교 및 오류 추출
+    errors = compare_notes(score_notes, performance_notes)
+
+    # JSON 형식으로 반환
+    return {
+        'statusCode': 200,
+        'body': json.dumps(errors)  # 오류 리스트를 JSON으로 반환
+    }
