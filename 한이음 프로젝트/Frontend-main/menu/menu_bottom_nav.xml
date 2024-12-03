@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragment_home"
+        android:title="홈"
+        android:icon="@drawable/ic_home_black"/>
+    <item
+        android:id="@+id/fragment_learningpage"
+        android:title="학습페이지"
+        android:icon="@drawable/ic_learningpage_black"/>
+    <item
+        android:title="AI Tutor"/>
+    <item
+        android:id="@+id/fragment_matching"
+        android:title="매칭"
+        android:icon="@drawable/ic_match_black"/>
+    <item
+        android:id="@+id/fragment_chat"
+        android:title="채팅"
+        android:icon="@drawable/ic_chat_black"/>
+</menu>
